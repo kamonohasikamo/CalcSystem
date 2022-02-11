@@ -4,14 +4,69 @@
 <head>
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="css/mainCSS.css" type="text/css">
-	<script src="js/mainView.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
 	<script src="js/mainModel.js"></script>
+	<script src="js/mainView.js"></script>
 	<title>支出計算アプリ</title>
 </head>
 
 <body>
-	<h1>支出計算アプリ</h1>
+	<div id="contents">
+		<aside id="menu">
+			<div class="box">
+				<div id="spendTotal">支出合計金額：0</div>
+				<div id="saveTotal">貯金合計金額：0</div>
+			</div>
+		</aside>
+		<main id="main">
+			<header>
+				<h1>支出計算アプリ</h1>
+				収入から支出金額を入れて貯金金額を知るアプリ．(自分が欲しいだけで作ったアプリ)
+			</header>
+			<h2>収入金額</h2>
+			<label>手取り金額：<input type="text" id="incomeValue"></label><input type="button" value="設定"
+				onclick="onPressIncomeValue()" />
 
+			<h2>支出金額</h2>
+			<table id="spendTable">
+				<tr>
+					<th>支出名</th>
+					<th>金額</th>
+					<th>ボタン</th>
+				</tr>
+				<!-- <tr>
+					<td><input type="text" id="spend_1_name"> </td>
+					<td><input type="text" id="spend_1_value"> </td>
+					<td><input type="button" value="登録" onclick="onPressSetSpend(1)" /><input type="button" value="削除"
+							onclick="onPressDelSpend(1, this)" /></td>
+				</tr> -->
+			</table>
+			<input type="button" value="行追加" onclick="onPressInsRowSpend()">
+
+			<h2>貯金金額</h2>
+			<table id="saveTable">
+				<tr>
+					<th>貯金先名</th>
+					<th>貯金額</th>
+					<th>ボタン</th>
+				</tr>
+				<!-- <tr>
+					<td><input type="text" id="save_1_name"> </td>
+					<td><input type="text" id="save_1_value"> </td>
+					<td><input type="button" value="登録" onclick="onPressSetSave(1)" /><input type="button" value="削除"
+							onclick="onPressDelSave(1, this)" /></td>
+				</tr> -->
+			</table>
+			<input type="button" value="行追加" onclick="onPressInsRowSave()">
+
+			<h2>割合</h2>
+			<h3>全体割合</h3>
+			<canvas id="allRate"></canvas>
+			<footer>
+				Author : kamonohasikamo
+			</footer>
+		</main>
+	</div>
 </body>
 
 </html>
