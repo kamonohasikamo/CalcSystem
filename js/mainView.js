@@ -2,10 +2,146 @@ let model;
 var allRate;
 var spendRate;
 var saveRate;
+var reader;
 
+function onChange(event) {
+	reader.readAsText(event.target.files[0]);
+}
 
 window.onload = function () {
 	model = new mainModel();
+}
+
+$(function () {
+	function onLoad(event) {
+		var inputFilelist = document.getElementById('inputFile').files;
+		var data = event.target.result;
+		var newObj = JSON.parse(data);
+
+		model.setIncome(newObj.incomeValue);
+		model.setSpendObj(newObj.spendObj);
+		model.setSaveObj(newObj.saveObj);
+
+		loadJsonShowData();
+	}
+
+
+	reader = new FileReader();
+	reader.onload = onLoad;
+
+	$('input[type="file"]').on('change', onChange);
+});
+
+// jsonロード時の画面更新処理
+function loadJsonShowData() {
+	var incomeField = document.getElementById("incomeValue");
+	incomeField.value = model.getIncome();
+
+	// 支出データの表示
+	var spendObj = model.getSpendObj();
+	var spendTable = document.getElementById("spendTable");
+
+	if (spendTable.childNodes.length > 1) {
+		for (var i = 2; i < spendTable.childNodes.length; i++) {
+			spendTable.removeChild(spendTable.children[i]);
+		}
+	}
+
+	for (var i = 0; i < spendObj.length; i++) {
+		var spendID = "spend_" + spendObj[i].id;
+		var tr = document.createElement("tr");
+
+		// 名前入力欄の登録
+		var nameTd = document.createElement("td");
+		var inputName = document.createElement("input");
+		inputName.type = "text";
+		inputName.id = spendID + "_name";
+		inputName.value = spendObj[i].name;
+		nameTd.appendChild(inputName);
+		tr.appendChild(nameTd);
+
+		// 金額入力欄の登録
+		var valueTd = document.createElement("td");
+		var inputVal = document.createElement("input");
+		inputVal.type = "text";
+		inputVal.id = spendID + "_value";
+		inputVal.value = spendObj[i].value;
+		valueTd.appendChild(inputVal);
+		tr.appendChild(valueTd);
+
+		// ボタン
+		var btnTd = document.createElement("td");
+		var setBtn = document.createElement("input");
+		setBtn.type = "button";
+		setBtn.value = "登録";
+		var func = "onPressSetSpend(" + spendObj[i].id + ")";
+		setBtn.setAttribute("onclick", func);
+		btnTd.appendChild(setBtn);
+		var delBtn = document.createElement("input");
+		delBtn.type = "button";
+		delBtn.value = "削除";
+		func = "onPressDelSpend(" + spendObj[i].id + ", this)";
+		delBtn.setAttribute("onclick", func);
+		btnTd.appendChild(delBtn);
+		tr.appendChild(btnTd);
+
+		// テーブルに追加
+		spendTable.appendChild(tr);
+	}
+
+	// 貯金データの表示
+	var saveObj = model.getSaveObj();
+	var saveTable = document.getElementById("saveTable");
+
+	if (saveTable.childNodes.length > 1) {
+		for (var i = 2; i < saveTable.childNodes.length; i++) {
+			saveTable.removeChild(saveTable.children[i]);
+		}
+	}
+
+	for (var i = 0; i < saveObj.length; i++) {
+		var saveID = "save_" + saveObj[i].id;
+		var tr = document.createElement("tr");
+
+		// 名前入力欄の登録
+		var nameTd = document.createElement("td");
+		var inputName = document.createElement("input");
+		inputName.type = "text";
+		inputName.id = saveID + "_name";
+		inputName.value = saveObj[i].name;
+		nameTd.appendChild(inputName);
+		tr.appendChild(nameTd);
+
+		// 金額入力欄の登録
+		var valueTd = document.createElement("td");
+		var inputVal = document.createElement("input");
+		inputVal.type = "text";
+		inputVal.id = saveID + "_value";
+		inputVal.value = saveObj[i].value;
+		valueTd.appendChild(inputVal);
+		tr.appendChild(valueTd);
+
+		// ボタン
+		var btnTd = document.createElement("td");
+		var setBtn = document.createElement("input");
+		setBtn.type = "button";
+		setBtn.value = "登録";
+		var func = "onPressSetSave(" + saveObj[i].id + ")";
+		setBtn.setAttribute("onclick", func);
+		btnTd.appendChild(setBtn);
+		var delBtn = document.createElement("input");
+		delBtn.type = "button";
+		delBtn.value = "削除";
+		func = "onPressDelSave(" + saveObj[i].id + ", this)";
+		delBtn.setAttribute("onclick", func);
+		btnTd.appendChild(delBtn);
+		tr.appendChild(btnTd);
+
+		// テーブルに追加
+		saveTable.appendChild(tr);
+	}
+
+	this.showData();
 }
 
 // 収入設定ボタン押下時の処理
@@ -332,7 +468,7 @@ function showSaveRate() {
 
 // CSVファイルの作成
 function downloadCSV() {
-	var target = document.getElementById("download");
+	var target = document.getElementById("downloadCSV");
 	target.download = "data.csv";
 	var bom = new Uint8Array([0xEF, 0xBB, 0xBF]); //文字コードをBOM付きUTF-8に指定
 	var data_csv = ""; //ここに文字データとして値を格納していく
@@ -340,13 +476,31 @@ function downloadCSV() {
 	data_csv = model.getCSVData();
 	var blob = new Blob([bom, data_csv], { "type": "text/csv" }); //data_csvのデータをcsvとしてダウンロードする関数
 	if (window.navigator.msSaveBlob) { //IEの場合の処理
-		window.navigator.msSaveBlob(blob, "test.csv");
+		window.navigator.msSaveBlob(blob, "data.csv");
 		//window.navigator.msSaveOrOpenBlob(blob, "test.csv");// msSaveOrOpenBlobの場合はファイルを保存せずに開ける
 	} else {
-		document.getElementById("download").href = window.URL.createObjectURL(blob);
+		document.getElementById("downloadCSV").href = window.URL.createObjectURL(blob);
 	}
 
 	delete data_csv;//data_csvオブジェクトはもういらないので消去してメモリを開放
+}
+
+// JSONファイルの作成
+function downloadJSON() {
+	var target = document.getElementById("downloadJSON");
+	target.download = "data.json";
+	var json = JSON.stringify(model.getJSONData());
+
+	var bom = new Uint8Array([0xEF, 0xBB, 0xBF]); //文字コードをBOM付きUTF-8に指定
+	var blob = new Blob([bom, json], { "type": "json" }); //data_csvのデータをjsonとしてダウンロードする関数
+	if (window.navigator.msSaveBlob) { //IEの場合の処理
+		window.navigator.msSaveBlob(blob, "data.json");
+		//window.navigator.msSaveOrOpenBlob(blob, "test.csv");// msSaveOrOpenBlobの場合はファイルを保存せずに開ける
+	} else {
+		document.getElementById("downloadJSON").href = window.URL.createObjectURL(blob);
+	}
+
+	delete json;//data_csvオブジェクトはもういらないので消去してメモリを開放
 }
 
 function saveSimulator() {
@@ -355,8 +509,9 @@ function saveSimulator() {
 	var div = document.getElementById("saveSimu");
 
 	if (div.hasChildNodes()) {
-		var clone = div.cloneNode(false);
-		div.parentNode.replaceChild(clone, div);
+		while (div.firstChild) {
+			div.removeChild(div.firstChild);
+		}
 	}
 
 	obj.forEach(element => {

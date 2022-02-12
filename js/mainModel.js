@@ -11,9 +11,27 @@ class mainModel {
 		this.incomeValue = Number(value);
 	}
 
+	setSpendObj(obj) {
+		this.spendObj = obj;
+	}
+
+	setSaveObj(obj) {
+		this.saveObj = obj;
+	}
+
 	// ゲッタ
 	getIncome() {
 		return this.incomeValue;
+	}
+
+	// 支出データの取得
+	getSpendObj() {
+		return this.spendObj;
+	}
+
+	// 貯金データ
+	getSaveObj() {
+		return this.saveObj;
 	}
 
 	//------------------------------------------
@@ -30,7 +48,6 @@ class mainModel {
 			this.spendObj[idx].name = name;
 			this.spendObj[idx].value = Number(value);
 		}
-		console.log(JSON.stringify(this.spendObj));
 	}
 
 	// 支出データの削除
@@ -68,7 +85,6 @@ class mainModel {
 
 	// 円グラフで使う支出データ
 	getPieDataSpendObj() {
-		console.log("check");
 		var obj = { "nameList": [], "valueList": [] };
 		var total = this.getSpendTotal();
 		this.spendObj.forEach(element => {
@@ -93,7 +109,6 @@ class mainModel {
 			this.saveObj[idx].name = name;
 			this.saveObj[idx].value = Number(value);
 		}
-		console.log(JSON.stringify(this.saveObj));
 	}
 
 	// 貯金データの削除
@@ -206,5 +221,16 @@ class mainModel {
 		}
 		csv += "\n";
 		return csv;
+	}
+
+	//----------------------------------------------------
+	// JSONデータの作成
+	//----------------------------------------------------
+	getJSONData() {
+		var json = {};
+		json.incomeValue = this.incomeValue;
+		json.spendObj = this.spendObj;
+		json.saveObj = this.saveObj;
+		return json;
 	}
 }

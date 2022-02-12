@@ -4,6 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="css/mainCSS.css" type="text/css">
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.js"></script>
 	<script src="js/mainModel.js"></script>
 	<script src="js/mainView.js"></script>
@@ -14,16 +15,20 @@
 	<div id="contents">
 		<aside id="menu">
 			<div class="box">
+				JSONデータ読み込み(あれば)<input id="inputFile" type="file" accept=".json">
 				<div id="spendTotal">支出合計金額：0</div>
 				<div id="saveTotal">貯金合計金額：0</div>
 				<div id="remain">残り金額：0</div>
-				<a id="download" href="#" onclick="downloadCSV()">CSVダウンロード</a>
+				<a id="downloadCSV" href="#" onclick="downloadCSV()">CSVダウンロード</a><br>
+				<a id="downloadJSON" href="#" onclick="downloadJSON()">JSONダウンロード</a>
 			</div>
 		</aside>
 		<main id="main">
 			<header>
 				<h1>支出計算アプリ</h1>
-				収入から支出金額を入れて貯金金額を知るアプリ．(自分が欲しいだけで作ったアプリ)
+				収入から支出金額を入れて貯金金額を知るアプリ．(自分が欲しいだけで作ったアプリ)<br>
+				JSONデータは今回のデータを保持しておくもので，次回以降このデータを使えば今の続きから編集できる．<br>
+				CSVデータはここに表示されている情報をまとめたもの．CSVからデータの復元はできない．
 			</header>
 			<h2>収入金額</h2>
 			<label>手取り金額：<input type="text" id="incomeValue"></label><input type="button" value="設定"
@@ -63,18 +68,27 @@
 
 			<h2>割合</h2>
 			<h3>全体割合</h3>
-			<canvas id="allRate"></canvas>
+			<div style="width:800px; height:400px;">
+				<canvas id="allRate"></canvas>
+			</div>
+
 			<h3>支出割合</h3>
-			<canvas id="spendRate"></canvas>
+			<div style="width:800px; height:400px;">
+				<canvas id="spendRate"></canvas>
+			</div>
+
 			<h3>貯金割合</h3>
-			<canvas id="saveRate"></canvas>
+			<div style="width:800px; height:400px;">
+				<canvas id="saveRate"></canvas>
+			</div>
 
 			<h2>貯金シミュレーター</h2>
 			各貯金を月々行った場合の貯金額を単純計算した結果<br>
-			<label><input type="text" id="toYear"> 年先まで見る<input type="button" value="出力" onclick="saveSimulator()"></label>
+			<label><input type="text" id="toYear"> 年先まで見る<input type="button" value="出力"
+					onclick="saveSimulator()"></label><br>
 			<div id="saveSimu"></div>
 			<footer>
-				Author : kamonohasikamo
+				Author : kamonohasikamo, Time : 6~7h
 			</footer>
 		</main>
 	</div>
