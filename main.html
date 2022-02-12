@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="css/mainCSS.css" type="text/css">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.js"></script>
 	<script src="js/mainModel.js"></script>
 	<script src="js/mainView.js"></script>
 	<title>支出計算アプリ</title>
@@ -16,6 +16,8 @@
 			<div class="box">
 				<div id="spendTotal">支出合計金額：0</div>
 				<div id="saveTotal">貯金合計金額：0</div>
+				<div id="remain">残り金額：0</div>
+				<a id="download" href="#" onclick="downloadCSV()">CSVダウンロード</a>
 			</div>
 		</aside>
 		<main id="main">
@@ -62,6 +64,15 @@
 			<h2>割合</h2>
 			<h3>全体割合</h3>
 			<canvas id="allRate"></canvas>
+			<h3>支出割合</h3>
+			<canvas id="spendRate"></canvas>
+			<h3>貯金割合</h3>
+			<canvas id="saveRate"></canvas>
+
+			<h2>貯金シミュレーター</h2>
+			各貯金を月々行った場合の貯金額を単純計算した結果<br>
+			<label><input type="text" id="toYear"> 年先まで見る<input type="button" value="出力" onclick="saveSimulator()"></label>
+			<div id="saveSimu"></div>
 			<footer>
 				Author : kamonohasikamo
 			</footer>
